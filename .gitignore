@@ -1,3 +1,6 @@
 *.out
 *.bin
 .vscode
+*.gch
+service/*.gch
+server/*.gch

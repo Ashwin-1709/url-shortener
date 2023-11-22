@@ -2,13 +2,31 @@
 #include <cstring>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include "../service/base_62_encoding.hh"
+#include <random> 
+#include <ctime>
+#include <chrono>
+#include "../service/encoding_service.hh"
 #define LISTEN_PORT 3600
 #define MAX_CLIENTS 5
+#define MAX_BUFFER_SIZE 1024
 
 void log_error(std::string error_message) {
     std::cerr << "Error: " << error_message << '\n';
     exit(0);
+}
+
+void close_fd(int sockfd, std::string socket_description) {
+    if(close(sockfd) == -1) {
+        log_error("unable to close " + socket_description);
+    }
+}
+
+std::string process_http_request(std::string encoding_http_request, EncodingService* encoding_service) {
+    std::string encoded_url;
+
+    // Todo: Parse HTTP headers and formulate http response
+
+    return encoded_url;
 }
 
 int main(int argc, char *argv[]) {
@@ -37,6 +55,10 @@ int main(int argc, char *argv[]) {
         log_error("Error on listening to the port");
     }
 
+    // 4. Initialising the encoding service
+    std::mt19937 mt(std::chrono::system_clock::now().time_since_epoch().count());
+    std::uniform_int_distribution<int64_t>dist(1, 1e14);
+    EncodingService *encoder = new EncodingService(dist(mt), "base62");
 
     while(true) {
         struct sockaddr_in client_address;
@@ -47,7 +69,30 @@ int main(int argc, char *argv[]) {
         }
         
         // TODO: process the connection encoding request
+        char buffer[MAX_BUFFER_SIZE];
+        std::string encoding_http_request;
+        ssize_t byted_read;
+        while ((byted_read = recv(client_socket_fd, buffer, sizeof(buffer), 0)) > 0) {
+            encoding_http_request.append(buffer, byted_read);
+        }
+
+        if(byted_read == -1) {
+            close_fd(client_socket_fd, "client socket");
+            close_fd(server_sockfd, "server socket");
+            log_error("Reading from client socket");
+        }
+
+        auto http_response = process_http_request(encoding_http_request, encoder);
+        ssize_t send_bytes = send(client_socket_fd, http_response.c_str(), http_response.size(), 0);
+
+        if(send_bytes == -1) {
+            close_fd(client_socket_fd, "client socket");
+            close_fd(server_sockfd, "server socket");
+            log_error("Writing to client socket");
+        }
 
         close(client_socket_fd);
     }
+
+    close_fd(server_sockfd, "server socket");
 }

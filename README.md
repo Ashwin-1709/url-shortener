@@ -17,16 +17,3 @@ Tasks and some extra features which I may implement totally depending on my mood
 7. Migration to a persistent database
 8. Incorporating a cache and implementing the eviction policy (Maybe)
 9. Handling TTL and expiry of shortened URLs (Maybe)
-
-
-#### Updates
-The initial version of the encoding service works but the code has few issues that need to be addressed.
-
-![Initial Encoding Service](images/encoding_service.png)
-
-The service crashes randomly with ```http::request_parser``` unable to parse the request and returning an ```boost::error_code``` with message `need more`. This suggests that ```http::request_parser``` needs more data to complete the parsing of the HTTP request and probably I am not reading the complete request from the socket before processing it.
-
-
-Possible solution:
-</br>
-To handle this error, I can either read more data from the socket into the buffer and then call ```put()``` again, or I can wait until I have received the entire HTTP request message before calling ```put()```.

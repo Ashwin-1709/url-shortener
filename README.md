@@ -24,7 +24,7 @@ The initial version of the encoding service works but the code has few issues th
 
 ![Initial Encoding Service](images/encoding_service.png)
 
-The service crashes randomly with ```http::request_parser``` unable to parse the request and returning an ```boost::error_code``` with message `need more`. This suggests that ```http::request_parser``` needs more data to complete the parsing of the HTTP request and probably I am not readint the complete request from the socket before processing it.
+The service crashes randomly with ```http::request_parser``` unable to parse the request and returning an ```boost::error_code``` with message `need more`. This suggests that ```http::request_parser``` needs more data to complete the parsing of the HTTP request and probably I am not reading the complete request from the socket before processing it.
 
 
 Possible solution:

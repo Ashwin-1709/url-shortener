@@ -3,6 +3,7 @@
 
 #include <map>
 #include <algorithm>
+#include <string>
 
 class Base62Encoder {
     public:

@@ -75,7 +75,6 @@ int main(int argc, char *argv[]) {
 
         std::cerr << "connected to client" << '\n';
         
-        // TODO: process the connection encoding request
         char buffer[MAX_BUFFER_SIZE];
         bzero((char *)buffer, sizeof(buffer));
         std::string encoding_http_request;

@@ -1,0 +1,1 @@
+g++ service/http_parser.hh service/http_parser.cc service/base_62_encoding.hh service/base_62_encoding.cc service/encoding_service.hh service/encoding_service.cc server/encoding_service_server.cpp -lpthread -std=c++17
